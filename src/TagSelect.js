@@ -1,10 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {
-  View,
-  ViewPropTypes,
-  StyleSheet
-} from 'react-native'
+import { View, ViewPropTypes, StyleSheet } from 'react-native'
 
 import TagSelectItem from './TagSelectItem'
 
@@ -28,7 +24,10 @@ class TagSelect extends React.Component {
     onItemPress: PropTypes.func,
 
     // Styles
-    containerStyle: ViewPropTypes.style
+    containerStyle: ViewPropTypes.style,
+
+    // radio like select or chekcbox. let's call it type
+    type: PropTypes.string
   }
 
   static defaultProps = {
@@ -44,7 +43,8 @@ class TagSelect extends React.Component {
     onMaxError: null,
     onItemPress: null,
 
-    containerStyle: {}
+    containerStyle: {},
+    type: 'checkbox'
   }
 
   state = {
@@ -53,7 +53,7 @@ class TagSelect extends React.Component {
 
   componentDidMount () {
     const value = {}
-    this.props.value.forEach((val) => {
+    this.props.value.forEach(val => {
       value[val[[this.props.keyAttr]] || val] = val
     })
 
@@ -87,10 +87,10 @@ class TagSelect extends React.Component {
    * @param {Object} item
    * @return {Void}
    */
-  handleSelectItem = (item) => {
+  handleSelectItem = item => {
     const key = item[this.props.keyAttr] || item
 
-    const value = { ...this.state.value }
+    let value = { ...this.state.value }
     const found = this.state.value[key]
 
     // Item is on array, so user is removing the selection
@@ -98,10 +98,16 @@ class TagSelect extends React.Component {
       delete value[key]
     } else {
       // User is adding but has reached the max number permitted
-      if (this.props.max && this.totalSelected >= this.props.max) {
+      if (
+        this.props.type === 'checkbox' &&
+        this.props.max &&
+        this.totalSelected >= this.props.max
+      ) {
         if (this.props.onMaxError) {
-          return this.props.onMaxError(key)
+          return this.props.onMaxError(value[key])
         }
+      } else if (this.props.type === 'radio') {
+        value = {}
       }
 
       value[key] = item
@@ -116,20 +122,19 @@ class TagSelect extends React.Component {
 
   render () {
     return (
-      <View
-        style={[
-          styles.container,
-          this.props.containerStyle
-        ]}
-      >
-        {this.props.data.map((i) => {
+      <View style={[styles.container, this.props.containerStyle]}>
+        {this.props.data.map(i => {
           return (
             <TagSelectItem
               {...this.props}
               label={i[this.props.labelAttr] ? i[this.props.labelAttr] : i}
               key={i[this.props.keyAttr] ? i[this.props.keyAttr] : i}
               onPress={this.handleSelectItem.bind(this, i)}
-              selected={(this.state.value[i[this.props.keyAttr]] || this.state.value[i]) && true}
+              selected={
+                (this.state.value[i[this.props.keyAttr]] ||
+                  this.state.value[i]) &&
+                  true
+              }
             />
           )
         })}

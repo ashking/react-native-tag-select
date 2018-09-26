@@ -27,7 +27,9 @@ class TagSelect extends React.Component {
     containerStyle: ViewPropTypes.style,
 
     // radio like select or chekcbox. let's call it type
-    type: PropTypes.string
+    type: PropTypes.string,
+
+    longPress: PropTypes.func
   }
 
   static defaultProps = {
@@ -44,7 +46,8 @@ class TagSelect extends React.Component {
     onItemPress: null,
 
     containerStyle: {},
-    type: 'checkbox'
+    type: 'checkbox',
+    longPress: null
   }
 
   state = {
@@ -120,6 +123,17 @@ class TagSelect extends React.Component {
     })
   }
 
+  /**
+   * @description Callback after select an item
+   * @param {Object} item
+   * @return {Void}
+   */
+  handleLongPressSelectItem = item => {
+    if (this.props.longPress) {
+      return this.props.longPress(item)
+    }
+  }
+
   render () {
     return (
       <View style={[styles.container, this.props.containerStyle]}>
@@ -130,6 +144,7 @@ class TagSelect extends React.Component {
               label={i[this.props.labelAttr] ? i[this.props.labelAttr] : i}
               key={i[this.props.keyAttr] ? i[this.props.keyAttr] : i}
               onPress={this.handleSelectItem.bind(this, i)}
+              onLongPress={this.handleLongPressSelectItem.bind(this, i)}
               selected={
                 (this.state.value[i[this.props.keyAttr]] ||
                   this.state.value[i]) &&

@@ -13,6 +13,7 @@ TagSelectItem.propTypes = {
 
   // Callbacks
   onPress: PropTypes.func,
+  onLongPress: PropTypes.func,
 
   // Indicate if the item is selected
   selected: PropTypes.bool,
@@ -45,7 +46,8 @@ TagSelectItem.defaultProps = {
   itemStyle: null,
   itemStyleSelected: null,
   itemLabelStyle: null,
-  itemLabelStyleSelected: null
+  itemLabelStyleSelected: null,
+  onLongPress: null
 }
 
 function TagSelectItem (props) {
@@ -53,6 +55,7 @@ function TagSelectItem (props) {
     <View style={styles.container}>
       <TouchableOpacity
         onPress={props.onPress}
+        onLongPress={props.onLongPress}
         activeOpacity={props.activeOpacity}
       >
         <View

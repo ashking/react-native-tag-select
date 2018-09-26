@@ -129,9 +129,13 @@ class TagSelect extends React.Component {
    * @return {Void}
    */
   handleLongPressSelectItem = item => {
+    const key = item[this.props.keyAttr] || item
+    let value = { ...this.state.value }
+
     if (this.props.longPress) {
       return this.props.longPress(item)
     }
+    value[key] = item
   }
 
   render () {

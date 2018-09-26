@@ -100,7 +100,7 @@ class TagSelect extends React.Component {
       // User is adding but has reached the max number permitted
       if (this.props.max && this.totalSelected >= this.props.max) {
         if (this.props.onMaxError) {
-          return this.props.onMaxError()
+          return this.props.onMaxError(key)
         }
       }
 
